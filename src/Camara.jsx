@@ -192,12 +192,12 @@ export default function Camara() {
           ))}
         </select>
       )}
-
-      <video ref={videoRef} autoPlay muted playsInline style={{ display: "none" }} />
+        <div className="w-50 h-20 ">gdsdsf</div>
+      <video ref={videoRef} autoPlay muted playsInline className="hidden " />
 
       <canvas
         ref={canvasRef}
-        className="rounded-xl shadow-lg border border-gray-700 w-full max-w-lg"
+        className="rounded-xl shadow-lg border border-gray-700 h-[200px] bg-[#111] w-full "
       />
     </div>
   );
