@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import logoWork from './assets/logoWorkout.png';
+import { verificarUsuario } from "./service/api";
 
 export default function Principal() {
     const [isRegister,setRegister] = useState(false);
@@ -32,7 +33,7 @@ export default function Principal() {
 
         if (!formLogin.correo) {
         newErrors.correo = "El correo es obligatorio";
-        } else if (!/\S+@\S+\.\S+/.test(form.correo)) {
+        } else if (!/\S+@\S+\.\S+/.test(formLogin.correo)) {
         newErrors.correo = "Correo inválido";
         }
 
@@ -48,47 +49,47 @@ export default function Principal() {
 
     // Manejar cambios
     const handleChange = (e) => {
-    const { name, value } = e.target;
+        const { name, value } = e.target;
 
-    setForm({
-        ...form,
-        [name]: value
-        });
-    };
+        setForm({
+            ...form,
+            [name]: value
+            });
+        };
 
-    // Validación
-    const validate = () => {
-        let newErrors = {};
+        // Validación
+        const validate = () => {
+            let newErrors = {};
 
-        if (!form.nombre) newErrors.nombre = "El nombre es obligatorio";
-        if (!form.apellidos) newErrors.apellidos = "Los apellidos son obligatorios";
+            if (!form.nombre) newErrors.nombre = "El nombre es obligatorio";
+            if (!form.apellidos) newErrors.apellidos = "Los apellidos son obligatorios";
 
-        if (!form.edad) newErrors.edad = "La edad es obligatoria";
-        else if (form.edad < 1) newErrors.edad = "Edad inválida";
+            if (!form.edad) newErrors.edad = "La edad es obligatoria";
+            else if (form.edad < 1) newErrors.edad = "Edad inválida";
 
-        if (!form.sexo) newErrors.sexo = "Selecciona un sexo";
+            if (!form.sexo) newErrors.sexo = "Selecciona un sexo";
 
-        if (!form.correo) {
-        newErrors.correo = "El correo es obligatorio";
-        } else if (!/\S+@\S+\.\S+/.test(form.correo)) {
-        newErrors.correo = "Correo inválido";
-        }
+            if (!form.correo) {
+            newErrors.correo = "El correo es obligatorio";
+            } else if (!/\S+@\S+\.\S+/.test(form.correo)) {
+            newErrors.correo = "Correo inválido";
+            }
 
-        if (!form.password) {
-        newErrors.password = "La contraseña es obligatoria";
-        } else if (form.password.length < 6) {
-        newErrors.password = "Mínimo 6 caracteres";
-        }
+            if (!form.password) {
+            newErrors.password = "La contraseña es obligatoria";
+            } else if (form.password.length < 6) {
+            newErrors.password = "Mínimo 6 caracteres";
+            }
 
-        if (!form.confirmPassword) {
-        newErrors.confirmPassword = "Confirma la contraseña";
-        } else if (form.password !== form.confirmPassword) {
-        newErrors.confirmPassword = "Las contraseñas no coinciden";
-        }
+            if (!form.confirmPassword) {
+            newErrors.confirmPassword = "Confirma la contraseña";
+            } else if (form.password !== form.confirmPassword) {
+            newErrors.confirmPassword = "Las contraseñas no coinciden";
+            }
 
-        setErrors(newErrors);
+            setErrors(newErrors);
 
-        return Object.keys(newErrors).length === 0;
+            return Object.keys(newErrors).length === 0;
     };
 
   // Submit
@@ -102,13 +103,24 @@ export default function Principal() {
     }
   };
 
-    const handleIniciarSesion = (e) => {
-        // Lógica para iniciar sesión
+    const handleIniciarSesion = async (e) => {
         e.preventDefault();
 
-        if (validateLogin()) {
-            console.log("Login válido:", formLogin);
-        // Aquí puedes enviar al backend
+
+
+        if (!validateLogin()) return;
+        console.log("Formulario de login válido:", form);
+        try {
+            const data = await verificarUsuario(
+                formLogin.correo,
+                formLogin.password
+            );
+
+            console.log("Usuario ID:", data.usuarioId);
+
+            // aquí puedes redirigir o guardar sesión
+        } catch (error) {
+            console.error(error.message);
         }
     };
     return (
