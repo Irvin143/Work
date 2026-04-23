@@ -164,7 +164,6 @@ export default function Camara() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4">
-      <h1 className="text-white text-xl mb-4">Workout Eye</h1>
 
       {/* 📋 Log visible en pantalla para debug mobile */}
       <div className="w-full max-w-lg mb-4 bg-black rounded p-2 text-xs text-green-400 font-mono min-h-[80px]">
@@ -192,13 +191,15 @@ export default function Camara() {
           ))}
         </select>
       )}
-        <div className="w-50 h-20 ">gdsdsf</div>
       <video ref={videoRef} autoPlay muted playsInline className="hidden " />
 
       <canvas
         ref={canvasRef}
-        className="rounded-xl shadow-lg border border-gray-700 h-[200px] bg-[#111] w-full "
+        className="rounded-xl shadow-lg border border-gray-700  bg-[#111] w-[90%]"
       />
+      <button  className="mt-4 p-4 py-3 bg-red-500 text-white text-lg rounded-xl font-bold">
+        🛑 Detener Cámara
+      </button>
     </div>
   );
 }
