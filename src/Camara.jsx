@@ -195,7 +195,7 @@ export default function Camara() {
 
       <canvas
         ref={canvasRef}
-        className="rounded-xl shadow-lg border border-gray-700  bg-[#111] w-[90%]"
+        className="rounded-xl shadow-lg border border-gray-700  bg-[#111] w-[95%]"
       />
       <button  className="mt-4 p-4 py-3 bg-red-500 text-white text-lg rounded-xl font-bold">
         🛑 Detener Cámara

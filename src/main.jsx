@@ -3,10 +3,12 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import Camara from './Camara.jsx'
 import Principal from './Principal.jsx'
+import InicioSesion from './InicioSesion.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Principal />
-    <Camara />
+    {/* <InicioSesion /> */}
+    <Principal/>
+    {/* <Camara /> */}
   </StrictMode>,
 )
