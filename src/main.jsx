@@ -6,7 +6,7 @@ import Principal from './Principal.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    {/* <Principal /> */}
+    <Principal />
     <Camara />
   </StrictMode>,
 )
