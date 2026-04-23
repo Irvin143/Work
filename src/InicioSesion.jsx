@@ -3,6 +3,7 @@ import { useState } from "react";
 import logoWork from './assets/logoWorkout.png';
 
 export default function Principal() {
+    const [isRegister,setRegister] = useState(false);
     const [form, setForm] = useState({
         nombre: "",
         apellidos: "",
@@ -12,6 +13,36 @@ export default function Principal() {
         password: "",
         confirmPassword: ""
     });
+
+    const [formLogin, setFormLogin] = useState({
+        correo: "",
+        password: ""
+    });
+
+    const handleChangeLogin = (e) => {
+        const { name, value } = e.target;
+        setFormLogin({
+            ...formLogin,
+            [name]: value
+        });
+    }
+
+    const validateLogin = () => {
+        let newErrors = {};
+
+        if (!formLogin.correo) {
+        newErrors.correo = "El correo es obligatorio";
+        } else if (!/\S+@\S+\.\S+/.test(form.correo)) {
+        newErrors.correo = "Correo inválido";
+        }
+
+        if (!formLogin.password) {
+        newErrors.password = "La contraseña es obligatoria";
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     const [errors, setErrors] = useState({});
 
@@ -66,25 +97,41 @@ export default function Principal() {
 
     if (validate()) {
       console.log("Formulario válido:", form);
+      setRegister(false);
       // Aquí puedes enviar al backend
     }
   };
+
+    const handleIniciarSesion = (e) => {
+        // Lógica para iniciar sesión
+        e.preventDefault();
+
+        if (validateLogin()) {
+            console.log("Login válido:", formLogin);
+        // Aquí puedes enviar al backend
+        }
+    };
     return (
         <>
             <div className="bg-[#D5ECF0]  flex flex-col"> 
                 <button className="self-start p-5 text-[1.2em] hover:cursor-pointer"> ← Regresar</button>
-                <article className=" hidden bg-white w-[90%] h-[70%] flex flex-col justify-center  items-center mt-12 mx-auto rounded-2xl">
+                <article className={` ${isRegister ? 'hidden' : 'flex'} bg-white w-[90%] h-[70%] flex flex-col justify-center  items-center mt-12 mx-auto mb-15 rounded-2xl`}>
                     <img src={logoWork} alt="" />
                     <span className="font-bold text-[1.4em]">Bienvenido</span>
-                    <form action="" className="flex flex-col justify-center items-center m-5">
-                        <Input tipo="text" text="Usuario"/>
-                        <Input tipo="password" text="Contraseña"/>
-                        <button className="my-8 bg-[#12B09A] px-7 py-3 rounded-xl text-white text-[1.2em]">
+                    <form action="" className="flex flex-col justify-center items-center m-5" onSubmit={handleIniciarSesion}>
+                        <Input tipo="text" text="Usuario" name="correo" onChange={handleChangeLogin} value={formLogin.correo} />
+                        {errors.correo && <p className="text-red-500 text-sm">{errors.correo}</p>}
+                        <Input tipo="password" text="Contraseña" name="password" onChange={handleChangeLogin} value={formLogin.password} />
+                        {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+                        <button type="button" className="mt-8 bg-[#12B09A] px-7 py-3 rounded-xl text-white text-[1.2em]" onClick={handleIniciarSesion}>
                             Iniciar Sesion
+                        </button>
+                        <button type="button" className="my-4 bg-[#fff] text-[#12B09A] border border-[#12B09A] px-7 py-3 rounded-xl text-[1.2em]" onClick={() => setRegister(true)}>
+                            Crear Cuenta
                         </button>
                     </form>
                 </article>
-                <article className="bg-white w-[90%] h-[80%] flex flex-col justify-center items-center py-15 mx-auto">
+                <article className={`${isRegister ? 'flex' : 'hidden'} bg-white w-[90%]  flex-col justify-center  items-center mt-12 mx-auto rounded-2xl`}>
                     <img src={logoWork} alt="" />
                     <span className="font-bold">Registro</span>
                     <form
@@ -181,7 +228,7 @@ export default function Principal() {
                             </p>
                         )}
 
-                        <button className="my-8 bg-[#12B09A] px-7 py-3 rounded-xl text-white text-[1.2em]">
+                        <button type="submit" className="my-8 bg-[#12B09A] px-7 py-3 rounded-xl text-white text-[1.2em]">
                             Registrarse
                         </button>
                     </form>
@@ -192,12 +239,12 @@ export default function Principal() {
 }
 
 function Input({ tipo = "text", text, ...props }) {
-  return (
-    <input
-      type={tipo}
-      placeholder={text}
-      className="my-2 px-4 py-2 rounded-lg bg-[#D5ECF0] w-full outline-none"
-      {...props}
-    />
-  );
+    return (
+        <input
+            type={tipo}
+            placeholder={text}
+            className="my-3 mb-5 px-4 py-2 rounded-lg bg-[#D5ECF0] w-full outline-none" 
+            {...props}
+        />
+    );
 }
