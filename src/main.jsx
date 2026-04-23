@@ -7,8 +7,8 @@ import InicioSesion from './InicioSesion.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    {/* <InicioSesion /> */}
-    <Principal/>
+    <InicioSesion />
+    {/* <Principal/> */}
     {/* <Camara /> */}
   </StrictMode>,
 )
