@@ -3,8 +3,15 @@ import { useState } from "react";
 import logoWork from './assets/logoWorkout.png';
 import { verificarUsuario } from "./service/api";
 import { grabarUsuario } from "./service/api";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Principal() {
+    const navigate = useNavigate();
+    
+    const irAPrincipal = (usuario) => {
+        navigate(`/principal/${usuario}`);
+    };
     const [isRegister,setRegister] = useState(false);
     const [form, setForm] = useState({
         nombre: "",
@@ -109,12 +116,10 @@ export default function Principal() {
             );
 
             console.log("Usuario ID:", data.usuarioId);
-
-            // aquí puedes redirigir o guardar sesión
+            setRegister(false);
         } catch (error) {
             console.error(error.message);
         }
-        // Aquí puedes enviar al backend
         }
     };
 
@@ -130,7 +135,7 @@ export default function Principal() {
             );
 
             console.log("Usuario ID:", data.usuarioId);
-
+            irAPrincipal(data.usuarioId);
             // aquí puedes redirigir o guardar sesión
         } catch (error) {
             console.error(error.message);
@@ -139,7 +144,7 @@ export default function Principal() {
     return (
         <>
             <div className="bg-[#D5ECF0]  flex flex-col"> 
-                <button className="self-start p-5 text-[1.2em] hover:cursor-pointer"> ← Regresar</button>
+                <button className="self-start p-5 text-[1.2em] hover:cursor-pointer" onClick={() => {navigate(-1)}}> ← Regresar</button>
                 <article className={` ${isRegister ? 'hidden' : 'flex'} bg-white w-[90%] h-[70%] flex flex-col justify-center  items-center mt-12 mx-auto mb-15 rounded-2xl`}>
                     <img src={logoWork} alt="" />
                     <span className="font-bold text-[1.4em]">Bienvenido</span>

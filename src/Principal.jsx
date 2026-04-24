@@ -1,11 +1,15 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import iconLogin from "./assets/loginWorkout.png";
 import iconMegafono from "./assets/campanaWorkout.png";
 import fondoPrincipal from "./assets/fondoWorkoutEye.png";
 import estadisticas from "./assets/estadisticas.png";
 import mancuerna from "./assets/mancuerna.webp";
+import { useParams } from "react-router-dom";
 
-export default function Principal({ nombre = "irvin" }) {
+
+export default function Principal() {
+    const { usuario } = useParams();
     return (
         <div>
             <header >
@@ -13,10 +17,10 @@ export default function Principal({ nombre = "irvin" }) {
             </header>
             <nav className="flex justify-between items-center p-4 w-[90%] bg-[#CCC] mx-auto rounded-xl mt-4">
                 <article className="flex justify-center items-center">
-                    <button className="hover:cursor-pointer hover:scale-[1.1] transform transition-300">
+                    <Link to="/login" className="hover:cursor-pointer hover:scale-[1.1] transform transition-300">
                         <img src={iconLogin} alt="Login"/>
-                    </button>
-                    <p className="text-[1.2em] ml-2">Hola {nombre}</p>
+                    </Link>
+                        <p className="text-[1.2em] ml-2">Hola {usuario}</p>
                 </article>
                 <button className="hover:cursor-pointer hover:scale-[1.1] transform transition-300">
                     <img src={iconMegafono} alt="Megafono" />
