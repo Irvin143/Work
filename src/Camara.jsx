@@ -165,41 +165,44 @@ export default function Camara() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4">
 
-      {/* 📋 Log visible en pantalla para debug mobile */}
-      <div className="w-full max-w-lg mb-4 bg-black rounded p-2 text-xs text-green-400 font-mono min-h-[80px]">
-        {logs.length === 0 ? <span className="text-gray-600">Logs aparecerán aquí...</span> : logs.map((l, i) => <div key={i}>{l}</div>)}
-      </div>
-
       {/* ✅ Botón obligatorio para disparar getUserMedia en mobile */}
-      {!started ? (
-        <button
-          onClick={handleStart}
-          className="mb-4 px-6 py-3 bg-green-500 text-white text-lg rounded-xl font-bold"
-        >
-          📷 Iniciar Cámara
-        </button>
-      ) : (
-        <select
-          value={selectedCamera}
-          onChange={(e) => setSelectedCamera(e.target.value)}
-          className="mb-4 p-2 rounded bg-white"
-        >
-          {cameras.map((cam, index) => (
-            <option key={cam.deviceId} value={cam.deviceId}>
-              {cam.label || `Cámara ${index + 1}`}
-            </option>
-          ))}
-        </select>
-      )}
+     
       <video ref={videoRef} autoPlay muted playsInline className="hidden " />
 
       <canvas
         ref={canvasRef}
         className="rounded-xl shadow-lg border border-gray-700  bg-[#111] w-[95%]"
       />
-      <button  className="mt-4 p-4 py-3 bg-red-500 text-white text-lg rounded-xl font-bold">
-        🛑 Detener Cámara
-      </button>
+      <article className="flex gap-5 my-4">
+        {!started ? (
+          <button
+            onClick={handleStart}
+            className="px-4 py-3 bg-green-500 text-white text-md rounded-xl font-bold"
+          >
+            Iniciar Cámara
+          </button>
+        ) : (
+          <select
+            value={selectedCamera}
+            onChange={(e) => setSelectedCamera(e.target.value)}
+            className="mb-4 p-2 rounded bg-white"
+          >
+            {cameras.map((cam, index) => (
+              <option key={cam.deviceId} value={cam.deviceId}>
+                {cam.label || `Cámara ${index + 1}`}
+              </option>
+            ))}
+          </select>
+        )}
+        <button  className="px-4 py-2 bg-red-500 text-white text-md rounded-xl font-bold">
+          Detener Cámara
+        </button>
+      </article>
+
+      {/* 📋 Log visible en pantalla para debug mobile */}
+      <div className="w-full max-w-lg mb-4 bg-black rounded p-2 text-xs text-green-400 font-mono min-h-[80px]">
+        {logs.length === 0 ? <span className="text-gray-600">Logs aparecerán aquí...</span> : logs.map((l, i) => <div key={i}>{l}</div>)}
+      </div>
     </div>
   );
 }

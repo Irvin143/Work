@@ -52,6 +52,8 @@ export default function Principal() {
 
 function Button({ text, color }) {
     return (
-        <button className={`${color} w-full py-3 text-white rounded-[20px] mb-5`}>{text}</button>
+        <button className={`${color} w-full py-3 text-white rounded-[20px] mb-5`}>
+            <Link to="/camara">{text}</Link>
+        </button>
     )
 }

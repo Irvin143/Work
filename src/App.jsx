@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Principal from "./Principal";
 import InicioSesion from "./InicioSesion";
+import Camara from "./Camara";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
         <Route path="/login" element={<InicioSesion />} />
         <Route path="/principal/:usuario" element={<Principal />} />
         <Route path="/principal" element={<Principal />} />
+        <Route path="/camara" element={<Camara />} />
       </Routes>
     </BrowserRouter>
   );
