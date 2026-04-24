@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import logoWork from './assets/logoWorkout.png';
 import { verificarUsuario } from "./service/api";
+import { grabarUsuario } from "./service/api";
 
 export default function Principal() {
     const [isRegister,setRegister] = useState(false);
@@ -37,8 +38,8 @@ export default function Principal() {
         newErrors.correo = "Correo inválido";
         }
 
-        if (!formLogin.password) {
-        newErrors.password = "La contraseña es obligatoria";
+        if (!formLogin.password || formLogin.password.length < 6) {
+        newErrors.password = "La contraseña es obligatoria y debe tener al menos 6 caracteres";
         }
 
         setErrors(newErrors);
@@ -92,21 +93,33 @@ export default function Principal() {
             return Object.keys(newErrors).length === 0;
     };
 
-  // Submit
-  const handleSubmit = (e) => {
-    e.preventDefault();
+    // Submit
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    if (validate()) {
-      console.log("Formulario válido:", form);
-      setRegister(false);
-      // Aquí puedes enviar al backend
-    }
-  };
+        if (validate()) {
+        console.log("Formulario válido:", form);
+        try {
+            const data = await grabarUsuario(
+                form.nombre,
+                form.correo,
+                form.password,
+                form.sexo,
+                form.edad
+            );
+
+            console.log("Usuario ID:", data.usuarioId);
+
+            // aquí puedes redirigir o guardar sesión
+        } catch (error) {
+            console.error(error.message);
+        }
+        // Aquí puedes enviar al backend
+        }
+    };
 
     const handleIniciarSesion = async (e) => {
         e.preventDefault();
-
-
 
         if (!validateLogin()) return;
         console.log("Formulario de login válido:", form);
@@ -186,7 +199,7 @@ export default function Principal() {
                             <input
                                 type="radio"
                                 name="sexo"
-                                value="H"
+                                value="M"
                                 onChange={handleChange}
                             />{" "}
                             Hombre
@@ -196,7 +209,7 @@ export default function Principal() {
                             <input
                                 type="radio"
                                 name="sexo"
-                                value="M"
+                                value="F"
                                 onChange={handleChange}
                             />{" "}
                             Mujer
