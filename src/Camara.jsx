@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import convertirLandmarksADiccionario from "./Utils/Utils";
+import drawPose from "./use/drawPose";
+import useCamera from "./use/useCamera";
 
 export default function Camara() {
   const videoRef = useRef(null);
@@ -14,10 +17,16 @@ export default function Camara() {
   const [started, setStarted] = useState(false);
   const [logs, setLogs] = useState([]); // 👈 logs visibles en pantalla
 
+
+  const socketRef = useRef(null); // WebSocket para enviar datos a backend
+  const lastSendRef = useRef(0);
+
+  
   const log = useCallback((msg) => {
     console.log(msg);
     setLogs((prev) => [...prev.slice(-6), msg]); // muestra últimos 7 logs
   }, []);
+  const { startCamera, stopCamera } = useCamera(log);
 
   // 🔁 Loop manual
   const startLoop = useCallback((pose) => {
@@ -36,6 +45,7 @@ export default function Camara() {
     animFrameRef.current = requestAnimationFrame(loop);
   }, [log]);
 
+  
   // ✅ Esta función se llama SOLO cuando el usuario toca el botón
   const handleStart = async () => {
     log("Iniciando...");
@@ -67,45 +77,37 @@ export default function Camara() {
     }
   };
 
+  useEffect(() => {
+    socketRef.current = new WebSocket("ws://localhost:8000/ws/keypoints");
+
+    socketRef.current.onopen = () => {
+      log("WebSocket conectado ✓");
+    };
+
+    socketRef.current.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      log("Ejercicio: " + data.NombreEjercicio);
+    };
+
+    return () => socketRef.current?.close();
+  }, []);
+
+
   // 🎥 Arrancar stream + MediaPipe cuando cambia la cámara
   useEffect(() => {
     if (!started || !selectedCamera) return;
 
-    let cancelled = false;
 
     const init = async () => {
-      // Limpiar anterior
-      isRunningRef.current = false;
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-      if (streamRef.current) streamRef.current.getTracks().forEach((t) => t.stop());
-
-      log("Abriendo stream de cámara...");
-
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { deviceId: { exact: selectedCamera }, width: { ideal: 640 }, height: { ideal: 480 } },
-          audio: false,
-        });
+        // Limpiar anterior
+        isRunningRef.current = false;
+        if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+        if (streamRef.current) streamRef.current.getTracks().forEach((t) => t.stop());
 
-        if (cancelled) { stream.getTracks().forEach((t) => t.stop()); return; }
+        log("Abriendo stream de cámara...");
 
-        streamRef.current = stream;
-        const video = videoRef.current;
-        video.srcObject = stream;
-        log("Stream asignado, esperando metadata...");
-
-        await new Promise((resolve, reject) => {
-          video.onloadedmetadata = async () => {
-            try {
-              await video.play();
-              log("Video reproduciéndose ✓");
-              resolve();
-            } catch (e) {
-              reject(e);
-            }
-          };
-          setTimeout(() => reject(new Error("Timeout esperando metadata")), 8000);
-        });
+        const stream = await startCamera(selectedCamera, videoRef);
 
         log("Inicializando MediaPipe Pose...");
 
@@ -122,26 +124,30 @@ export default function Camara() {
         });
 
         pose.onResults((results) => {
-          const canvas = canvasRef.current;
-          if (!canvas || !videoRef.current) return;
-          const ctx = canvas.getContext("2d");
+          
+          drawPose(results, canvasRef, videoRef);
+          if (!results.poseLandmarks) return;
 
-          canvas.width = videoRef.current.videoWidth;
-          canvas.height = videoRef.current.videoHeight;
+          const now = Date.now();
+          if (now - lastSendRef.current < 200) return;
+          lastSendRef.current = now;
 
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+          // 👉 SIEMPRE actualizas primero los datos
+        const keypoints = results.poseLandmarks.map(lm => [
+          lm.x ?? 0,
+          lm.y ?? 0,
+          lm.z ?? 0
+        ]);
+          const cuerpo = convertirLandmarksADiccionario(results.poseLandmarks);
 
-          if (results.poseLandmarks) {
-            results.poseLandmarks.forEach((p) => {
-              ctx.beginPath();
-              ctx.arc(p.x * canvas.width, p.y * canvas.height, 5, 0, 2 * Math.PI);
-              ctx.fillStyle = "red";
-              ctx.fill();
-            });
+          if (socketRef.current?.readyState === 1) {
+            socketRef.current.send(JSON.stringify({
+              keypoints,
+              keypoints_cuerpo: cuerpo
+            }));
           }
-        });
 
+        });
         await pose.initialize();
         log("Pose inicializado ✓ — arrancando loop...");
 
@@ -162,7 +168,6 @@ export default function Camara() {
       if (streamRef.current) streamRef.current.getTracks().forEach((t) => t.stop());
     };
   }, [started, selectedCamera, log, startLoop]);
-
   return (
     <div className="flex flex-col items-center justify-between min-h-screen bg-gray-900 p-4">
       <Link to="/principal" className="self-start p-5 text-[1.2em]  hover:cursor-pointer" > ← Regresar</Link>
@@ -194,7 +199,7 @@ export default function Camara() {
             ))}
           </select>
         )}
-        <button  className="px-4 py-2 bg-red-500 text-white text-md rounded-xl font-bold">
+        <button  className="px-4 py-2 bg-red-500 text-white text-md rounded-xl font-bold" onClick={() => stopCamera()}>
           Detener Cámara
         </button>
       </article>

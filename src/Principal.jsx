@@ -34,14 +34,14 @@ export default function Principal() {
                 <article className="flex flex-col  items-center m-1"> 
                     <Button text="Subir Video" color="bg-[#2798F5]" />
                     <article className="bg-[#0DB6D6] p-4 rounded-[20px] justify-center items-center flex flex-col">
-                        <Button text="Estadisticas" color="bg-[#15778A]" />
+                        <Button text="Estadisticas" color="bg-[#15778A]" direccion="/estadisticas" />
                         <img src={estadisticas} alt="Estadisticas" className="w-[200px]" />
                     </article>
                 </article>
                 <article className="flex flex-col items-center m-1">
-                    <Button text="Iniciar Camara" color="bg-[#179927]" />
+                    <Button text="Iniciar Camara" color="bg-[#179927]" direccion="/camara" />
                     <article className="bg-[#DEA207] p-4 rounded-[20px] justify-center items-center flex flex-col">
-                        <Button text="Rutinas" color="bg-[#8A6915]" />
+                        <Button text="Rutinas" color="bg-[#8A6915]" direccion="/rutinas" />
                         <img src={mancuerna} alt="Mancuerna" className="w-[200px]" />
                     </article>
                 </article>
@@ -50,10 +50,10 @@ export default function Principal() {
     )
 }
 
-function Button({ text, color }) {
+function Button({ text, color, direccion }) {
     return (
         <button className={`${color} w-full py-3 text-white rounded-[20px] mb-5`}>
-            <Link to="/camara">{text}</Link>
+            <Link to={direccion}>{text}</Link>
         </button>
     )
 }
