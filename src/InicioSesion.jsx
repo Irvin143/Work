@@ -138,6 +138,8 @@ export default function Principal() {
             irAPrincipal(data.usuarioId);
             // aquí puedes redirigir o guardar sesión
         } catch (error) {
+            
+            setErrors(prev => ({ ...prev, "password": "Contraseña o correo incorrectos" }));
             console.error(error.message);
         }
     };

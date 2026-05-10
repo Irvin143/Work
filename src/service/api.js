@@ -35,6 +35,5 @@ export const grabarUsuario = async (nombre, correo, contrasena, genero, edad) =>
     if (!response.ok) {
         throw new Error(data.detail);
     }
-
     return data;
 };

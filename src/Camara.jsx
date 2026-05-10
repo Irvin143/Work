@@ -169,7 +169,7 @@ export default function Camara() {
     };
   }, [started, selectedCamera, log, startLoop]);
   return (
-    <div className="flex flex-col items-center justify-between min-h-screen bg-gray-900 p-4">
+    <div className="flex flex-col items-center justify-between min-h-screen p-4">
       <Link to="/principal" className="self-start p-5 text-[1.2em]  hover:cursor-pointer" > ← Regresar</Link>
                 
       <video ref={videoRef} autoPlay muted playsInline className="hidden " />

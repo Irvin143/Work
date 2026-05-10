@@ -4,6 +4,7 @@ import Principal from "./Principal";
 import InicioSesion from "./InicioSesion";
 import Camara from "./Camara";
 import Estadisticas  from "./Estadisticas";
+import SubirVideo from "./SubirVideo";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/principal" element={<Principal />} />
         <Route path="/camara" element={<Camara />} />
         <Route path="/estadisticas" element={<Estadisticas />} />
+        <Route path="/subir-video" element={<SubirVideo />} />
       </Routes>
     </BrowserRouter>
   );

@@ -32,7 +32,7 @@ export default function Principal() {
             <section className="flex w-[90%] mx-auto mt-4 justify-evenly
              items-start">
                 <article className="flex flex-col  items-center m-1"> 
-                    <Button text="Subir Video" color="bg-[#2798F5]" />
+                    <Button text="Subir Video" color="bg-[#2798F5]" direccion="/subir-video" />
                     <article className="bg-[#0DB6D6] p-4 rounded-[20px] justify-center items-center flex flex-col">
                         <Button text="Estadisticas" color="bg-[#15778A]" direccion="/estadisticas" />
                         <img src={estadisticas} alt="Estadisticas" className="w-[200px]" />
