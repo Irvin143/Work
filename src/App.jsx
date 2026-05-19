@@ -10,7 +10,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<principal />} />
+        <Route path="/" element={<Principal />} />
         <Route path="/login" element={<InicioSesion />} />
         <Route path="/principal/:usuario" element={<Principal />} />
         <Route path="/principal" element={<Principal />} />
